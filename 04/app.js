@@ -12,8 +12,11 @@ class App extends React.Component {
     }
 
     renderUsersList() {
-        const {users} = this.state;
-        return users.map(name => {
+        const { users, searchQuery } = this.state;
+        const filteredUsers = users.filter(user => 
+            user.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        return filteredUsers.map(name => {
             return (
                 <li onClick={ this.clickHandler }>
                     { name }
@@ -23,19 +26,23 @@ class App extends React.Component {
     }
 
     clickHandler = e => {
-        const {innerText: userName} = e.target;
+        const { innerText: userName } = e.target;
         this.removeUser(userName);
     }
 
     inputChange = e => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         this.setState({
             [name]: value,
         });
     }
 
+    handleSearchChange = e => {
+        this.setState({ searchQuery: e.target.value });
+    }
+
     render() {
-        const { firstName, lastName } = this.state;
+        const { firstName, lastName, searchQuery } = this.state;
         return (
             <section onSubmit={ this.submitHandler }>
                 <form>
@@ -49,6 +56,12 @@ class App extends React.Component {
                     />
                     <input type="submit"/>
                 </form>
+                <input 
+                    type="text"
+                    placeholder="Wyszukaj użytkownika..."
+                    value={ searchQuery }
+                    onChange={ this.handleSearchChange }
+                />
                 <ul>{ this.renderUsersList() }</ul>
             </section>
         );
